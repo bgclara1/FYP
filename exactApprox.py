@@ -93,3 +93,15 @@ plt.show()
 
 best_alpha = alphas[np.argmin(errors)]
 print(f"Best α = {best_alpha:.2f}, MSE = {min(errors):.4e}")
+
+# ---------------------------
+# 6. Report best result clearly
+# ---------------------------
+best_idx = np.argmin(errors)
+best_alpha = alphas[best_idx]
+best_mse = errors[best_idx]
+
+print("="*50)
+print(f"Lowest Mean Squared Error: {best_mse:.6f}")
+print(f"Achieved at α = {best_alpha:.2f}")
+print("="*50)
