@@ -1,3 +1,12 @@
+""" 
+This code has three sets of data. Each lie over the full domain. One follows the exact function and two with (different) systematic offsets. 
+The point of the code is to vary the weighting of the two offset data sets and track the MSE with each.
+200 total data points
+Function: y = sin(2*pi*x) + 0.3*x
+SVM model RBF kernel. 
+"""
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.svm import SVR
@@ -56,7 +65,7 @@ for (a1, a2) in alpha_pairs:
     w_approx2 = a2 * np.ones_like(y_approx2)
     sample_weights = np.concatenate([w_exact, w_approx1, w_approx2])
     
-    svr = SVR(kernel='rbf', C=10, gamma=10)
+    svr = SVR(kernel='rbf')
     svr.fit(X, y, sample_weight=sample_weights)
     
     y_pred = svr.predict(x_all.reshape(-1, 1))

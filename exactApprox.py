@@ -1,6 +1,6 @@
 """ 
 This code has two sets of data. One exact set following the true function on a restricted domain. One with a systematic offset in a separate domain. 
-The point of the code is to vary the weighting of the offset code and track the MSE with each.
+The point of the code is to vary the weighting of the offset data and track the MSE with each.
 Domain for exact data 0 to 0.3, domain for offset data 0.3 to 1
 200 total data points
 Function: y = sin(2*pi*x) + 0.3*x

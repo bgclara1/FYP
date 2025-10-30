@@ -1,3 +1,13 @@
+""" 
+This code has three sets of data. One exact set following the true function on a restricted domain. One with a systematic offset over the whole dowmain. One following the exact function with random noise over the full domain. 
+The point of the code is to vary the weighting of the approximate data sets and track the MSE with each.
+Domain for exact data 0 to 0.3, domain for approx data sets 0 to 1.
+200 total data points
+Function: y = sin(2*pi*x) + 0.3*x
+SVM model RBF kernel. 
+"""
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.svm import SVR
@@ -24,7 +34,7 @@ y_exact = f_true(x_exact)
 
 # approximate data
 x_approx1 = x_all
-y_approx1 = f_true(x_approx1) + 0.5             # scaled
+y_approx1 = f_true(x_approx1) + 0.5             # offset
 x_approx2 = x_all
 y_approx2 = f_true(x_approx2) + np.random.normal(0, 0.25, len(x_approx2))  # noisy
 
@@ -35,8 +45,8 @@ y = np.concatenate([y_exact, y_approx1, y_approx2])
 # ---------------------------
 # 3. Define α₁, α₂ ranges
 # ---------------------------
-alphas1 = np.linspace(0, 1, 20)   # trust in scaled data
-alphas2 = np.linspace(0, 1, 20)   # trust in noisy data
+alphas1 = np.linspace(0, 1, 10)   # trust in scaled data
+alphas2 = np.linspace(0, 1, 10)   # trust in noisy data
 errors = np.zeros((len(alphas1), len(alphas2)))
 
 # ---------------------------
@@ -49,7 +59,7 @@ for i, a1 in enumerate(alphas1):
         w_approx2 = a2 * np.ones_like(y_approx2)
         weights = np.concatenate([w_exact, w_approx1, w_approx2])
 
-        svr = SVR(kernel='rbf', C=10, gamma=10)
+        svr = SVR(kernel='rbf')
         svr.fit(X, y, sample_weight=weights)
         y_pred = svr.predict(x_all.reshape(-1, 1))
         mse = mean_squared_error(y_true, y_pred)

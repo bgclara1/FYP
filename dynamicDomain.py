@@ -1,3 +1,14 @@
+""" 
+This code has two sets of data. One exact set following the true function on a restricted domain. One with a systematic offset in a separate domain. 
+The point of the code is to vary the weighting of the exact data as a function of the domain, and calculate corresponding MSE.
+Domain for exact data 0 to 0.3, domain for offset data 0.3 to 1.
+Full trust in exact data [0, 0.3], linearly decaying to 0.2 between 0.3 and 1.
+200 total data points
+Function: y = sin(2*pi*x) + 0.3*x
+SVM model RBF kernel. 
+"""
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.svm import SVR
@@ -32,9 +43,6 @@ y = np.concatenate([y_exact, y_approx])
 # 3. Define spatial trust weighting
 # ---------------------------
 def trust_weight(x):
-    """
-    Full trust in [0, 0.3], linearly decaying to 0.2 by x=1.
-    """
     x = np.array(x)
     w = np.ones_like(x)
     decay_start, decay_end = 0.3, 1.0
@@ -50,7 +58,7 @@ weights = trust_weight(np.concatenate([x_exact, x_approx]))
 # ---------------------------
 # 4. Train SVR with spatial weights
 # ---------------------------
-svr = SVR(kernel='rbf', C=10, gamma=10)
+svr = SVR(kernel='rbf')
 svr.fit(X, y, sample_weight=weights)
 
 # predict
