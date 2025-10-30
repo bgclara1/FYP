@@ -1,3 +1,12 @@
+""" 
+This code has two sets of data. One exact set following the true function on a restricted domain. One with a systematic offset in a separate domain. 
+The point of the code is to vary the weighting of the offset code and track the MSE with each.
+Domain for exact data 0 to 0.3, domain for offset data 0.3 to 1
+200 total data points
+Function: y = sin(2*pi*x) + 0.3*x
+SVM model RBF kernel. 
+"""
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.svm import SVR
@@ -25,17 +34,17 @@ x_approx = x_all[x_all > 0.3]
 y_approx = f_true(x_approx) + 0.5   # systematic offset
 
 # combine
-X = np.concatenate([x_exact, x_approx]).reshape(-1, 1)
+X = np.concatenate([x_exact, x_approx]).reshape(-1, 1) # flattens into 1D array
 y = np.concatenate([y_exact, y_approx])
 
 # test domain (true function)
-X_test = x_all.reshape(-1, 1)
+X_test = x_all.reshape(-1, 1) 
 y_test = y_true
 
 # ---------------------------
 # 3. Loop over alphas
 # ---------------------------
-alphas = np.linspace(0, 1, 10)  # 0, 0.2, 0.4, 0.6, 0.8, 1
+alphas = np.linspace(0, 1, 10)  #(lower bound, upper bound, number of values)
 errors = []
 predictions = []
 
@@ -43,10 +52,10 @@ for alpha in alphas:
     # assign weights
     w_exact = np.ones_like(y_exact)
     w_approx = alpha * np.ones_like(y_approx)
-    sample_weights = np.concatenate([w_exact, w_approx])
+    sample_weights = np.concatenate([w_exact, w_approx]) # array of weights, dimensions corresponding to training points
     
     # train SVR
-    svr = SVR(kernel='rbf', C=10, gamma=10)
+    svr = SVR(kernel='rbf')
     svr.fit(X, y, sample_weight=sample_weights)
     
     # predict
