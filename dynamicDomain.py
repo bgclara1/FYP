@@ -34,6 +34,7 @@ y_exact = f_true(x_exact)
 # approximate data (biased)
 x_approx = x_all[x_all > 0.3]
 y_approx = f_true(x_approx) + 0.5  # bias
+#y_approx_derivs = np.gradient(y_approx, x_approx)
 
 # combine data
 X = np.concatenate([x_exact, x_approx]).reshape(-1, 1)
