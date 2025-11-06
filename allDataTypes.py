@@ -40,6 +40,7 @@ DATA['noisy'] = data_noisy
 data_nl_distort = (x_all, f_true(x_all)+ 0.1 * np.sin(f_true(x_all))-np.exp(f_true(x_all)))
 DATA['nonlinear_distortion'] = data_nl_distort
 
+'''
 # Plot all data types
 plt.figure(figsize=(12, 8))
 for i, (key, (x, y)) in enumerate(DATA.items()):
@@ -55,3 +56,4 @@ plt.legend()
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
 plt.show()
+'''

@@ -27,34 +27,23 @@ y_exact = y_exact[mask_exact]
 mask_approx = x_approx > 0.3
 x_approx = x_approx[mask_approx]
 y_approx = y_approx[mask_approx]
+y_approx_derivs = np.gradient(y_approx)
 
-# 3. Combine data
+# 3. Combine for model training
 X = np.concatenate([x_exact, x_approx]).reshape(-1, 1)
-y = np.concatenate([y_exact, y_approx])
+y = np.concatenate([y_exact, y_approx_derivs])
 
-# 4. Define spatial trust weighting
-def trust_weight(x):
-    x = np.array(x)
-    w = np.ones_like(x)
-    decay_start, decay_end = 0.3, 1.0
-    min_weight = 0.2
-    mask = x > decay_start
-    w[mask] = 1 - (1 - min_weight) * (x[mask] - decay_start) / (decay_end - decay_start)
-    w = np.clip(w, min_weight, 1)
-    return w
-weights = trust_weight(np.concatenate([x_exact, x_approx]))
-
-# 5. Train SVR with spatial weights
+# 4. Train SVR
 svr = SVR(kernel='rbf')
-svr.fit(X, y, sample_weight=weights)
+svr.fit(X, y)
 X_test = x_all.reshape(-1, 1)
 y_pred = svr.predict(X_test)
 
-# 6. Compute and print MSE
+# 5. Compute and print MSE
 mse = mean_squared_error(y_true, y_pred)
 print(f"Mean Squared Error (MSE): {mse:.6f}")
 
-# 7. Plot results
+# 6. Plot results
 plt.figure(figsize=(9,6))
 plt.plot(x_all, y_true, 'k-', label='True f(x)')
 plt.plot(x_all, y_pred, 'r--', label='Weighted SVR prediction')
@@ -66,3 +55,4 @@ plt.title(f'Spatially weighted SVR (MSE = {mse:.4e})')
 plt.legend()
 plt.grid(True)
 plt.show()
+
