@@ -34,7 +34,7 @@ x_all, y_true = DATA['exact']
 xv = x_all[x_all <= 0.3]
 yv = y_true[x_all <= 0.3]
 xg = x_all[x_all > 0.3]
-y_approx = DATA['y_offset'][1][x_all > 0.3]
+y_approx = DATA['noisy'][1][x_all > 0.3]
 
 # 3. Numerical gradient of approx data (central differences)
 dx = np.diff(xg)
@@ -43,9 +43,9 @@ gy[1:-1] = (y_approx[2:] - y_approx[:-2]) / (xg[2:] - xg[:-2])
 gy[0] = (y_approx[1] - y_approx[0]) / (xg[1] - xg[0])
 gy[-1] = (y_approx[-1] - y_approx[-2]) / (xg[-1] - xg[-2])
 
-sigma = 0.1
-lam_v = 1e-3
-lam_g = 1e-3
+sigma = 0.01
+lam_v = 0
+lam_g = 0
 nv, ng = len(xv), len(xg)
 
 # 4. Build blocks with correct shapes
@@ -79,7 +79,7 @@ plt.scatter(xv, yv, color='blue', s=25, label='Exact data')
 plt.scatter(xg, y_approx, color='orange', s=25, label='Approx data (offset)')
 plt.xlabel('x')
 plt.ylabel('y')
-plt.title('Kernel Ridge with Value + Gradient Constraints')
+plt.title('Linear Regression Noisy')
 plt.legend()
 plt.grid(True, alpha=0.3)
 plt.tight_layout()
